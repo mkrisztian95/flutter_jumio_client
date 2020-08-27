@@ -699,6 +699,7 @@ static FlutterMethodChannel* channel;
     
     @try {
         self.documentVerificationViewController = [[DocumentVerificationViewController alloc] initWithConfiguration: self.documentVerifcationConfiguration];
+    
         self.initiateSuccessfulDocumentVerification = YES;
     } @catch (NSException *exception) {
         NSString *msg = [NSString stringWithFormat: @"Cancelled with exception %@: %@", exception.name, exception.reason];

@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:flutter_jumio/flutter_jumio.dart';
 
 void main() => runApp(MyApp());
@@ -14,26 +11,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  /// if you want to launch this example project
-  /// you should either add your apiToken and apiSecret
-  /// here, or create a file called secrets.json in the 
-  /// assets folder (assets/secrets.json) with the following structure
-  /// {
-  ///   "apiSecret": "YOUR JUMIO SECRET HERE",
-  ///   "apiToken": "YOUR JUMIO TOKEN HERE"
-  /// }
   String _apiToken = 'c339d67a-fd3d-4114-b42a-4d211134928d';
   String _apiSecret = 'PIsBLmYKn8UiSvSNFUhMLYqXsSC6EiQf';
 
-  bool _bamInitialized = false;
   bool _netverifyInitialized = false;
   bool _docVerificationInitialized = false;
-  bool _authInitialized = false;
 
   @override
   void initState() {
     super.initState();
-//    _loadTokenAndSecret();
   }
 
   Future _initNetverify() async {
@@ -61,58 +47,12 @@ class _MyAppState extends State<MyApp> {
       _netverifyInitialized = true;
     });
   }
+
   Future _startNetverify() async {
      await FlutterJumio.startNetVerify();
      setState(() {});
   }
-  Future _initBam() async {
-    await FlutterJumio.initBAM(
-      apiToken: _apiToken,
-      apiSecret: _apiSecret,
-      dataCenter: DataCenter.US,
-      config: BamConfig(
-        cameraPosition: CameraPosition.FRONT,
-        cardHolderNameEditable: true,
-        cardHolderNameRequired: true,
-        cardTypes: [
-          CardTypes.MASTER_CARD, 
-          CardTypes.VISA,
-          CardTypes.AMERICAN_EXPRESS,
-          CardTypes.CHINA_UNIONPAY,
-          CardTypes.DINERS_CLUB,
-          CardTypes.DISCOVER,
-          CardTypes.JCB
-        ],
-        enableFlashOnScanStart: true,
-        cvvRequired: true,
-        expiryEditable: true,
-        expiryRequired: true,
-        sortCodeAndAccountNumberRequired: false
-      )
-    );
-    setState(() {
-      _bamInitialized = true;
-    });
-  }
-  Future _startBam() async {
-    await FlutterJumio.startBam();
-  }
-  Future _initAuthentication() async {
-    await FlutterJumio.initAuthentication(
-      apiSecret: _apiSecret,
-      apiToken: _apiToken,
-      dataCenter: DataCenter.EU,
-      config: AuthenticationConfig(
-        enrollmentTransactionReference: 'Some enrollment reference',
-      )
-    );
-    setState(() {
-      _authInitialized = true;
-    });
-  }
-  Future _startAuthentication() async {
-    await FlutterJumio.startAuthentication();
-  }
+
   Future _initDocumentVerification() async {
     await FlutterJumio.initDocunmentVerification(
       apiSecret: _apiSecret,
@@ -138,51 +78,41 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Flutter Jumio Example'),
+          backgroundColor: Colors.teal,
+          title: const Text('JUMIO'),
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              RaisedButton(
-                color: _docVerificationInitialized ? Colors.grey : Colors.green,
-                onPressed: _initDocumentVerification,
-                child: Text('Init Document Verification'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    color: _docVerificationInitialized ? Colors.grey : Colors.teal,
+                    onPressed: _initDocumentVerification,
+                    child: Text('Document - init'),
+                  ),
+                  RaisedButton(
+                    onPressed: _docVerificationInitialized ? _startDocumentVerification : null,
+                    child: Text('Document - flow'),
+                  ),
+                ],
               ),
-              RaisedButton(
-                onPressed: _docVerificationInitialized ? _startDocumentVerification : null,
-                child: Text('Start Document Verification'),
-              ),
-              Divider(height: 10,),
-              RaisedButton(
-                color: _bamInitialized ? Colors.grey : Colors.green,
-                onPressed: _initBam,
-                child: Text('Init BAM'),
-              ),
-              RaisedButton(
-                onPressed: _bamInitialized ? _startBam : null,
-                child: Text('Start BAM'),
-              ),
-              Divider(height: 10,),
-              RaisedButton(
-                color: _netverifyInitialized ? Colors.grey : Colors.green,
-                onPressed: _initNetverify,
-                child: Text('Init Netverify'),
-              ),
-              RaisedButton(
-                onPressed: _netverifyInitialized ? _startNetverify : null,
-                child: Text('Start Netverify'),
-              ),
-              Divider(height: 10,),
-              RaisedButton(
-                color: _authInitialized ? Colors.grey : Colors.green,
-                onPressed: _initAuthentication,
-                child: Text('Init Authentication'),
-              ),
-              RaisedButton(
-                onPressed: _authInitialized ? _startAuthentication : null,
-                child: Text('Start Authentication'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    color: _netverifyInitialized ? Colors.grey : Colors.teal,
+                    onPressed: _initNetverify,
+                    child: Text('NetV - init'),
+                  ),
+                  RaisedButton(
+                    onPressed: _netverifyInitialized ? _startNetverify : null,
+                    child: Text('NetV - flow'),
+                  ),
+                ],
               ),
             ],
           ),
